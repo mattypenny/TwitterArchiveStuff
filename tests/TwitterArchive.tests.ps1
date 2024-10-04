@@ -2,17 +2,21 @@ Describe "Convert-TaTwitterArchiveToPsObject" {
 
     BeforeAll {
         
-        $tweets = Get-Content tests/DummyTwitterArchive.json | convertfrom-json | Convert-TaTwitterArchiveToPsObject
+        $tweets = Get-Content $PsScriptRoot/DummyTwitterArchive.json | convertfrom-json | Convert-TaTwitterArchiveToPsObject
 
     }
 
     It "returns the right number of tweets" {
-        $tweets.length | Should -Be 1
+        $tweets.length | Should -Be 2
     }
 
-        It -pending "converts shortened URLs to long URLs" {
+        It "converts Musk's shortened URLs to long URLs" {
 
-            $True | Should -Be $False
+            $TweetWithTheLink = $Tweets[1]
+            $Text = $TweetWithTheLink.Text
+            Write-Debug "`$Text: <$Text>"
+            $Text.Contains('t.co') | Should -Be $False
+            $Text | Should -BeLike "*bbc*"
 
     }
 
