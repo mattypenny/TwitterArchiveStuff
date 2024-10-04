@@ -50,6 +50,9 @@ function Convert-TaTwitterArchiveToPsObject {
                 [PSCustomObject]@{
                     datetime = $Top.created_at
                     Text     = $Text
+                    converteddateTime = [DateTime]::ParseExact($Top.created_at,
+                        'ddd MMM dd HH:mm:ss zzz yyyy', 
+                        $null) 
                 }
             }
             else {
