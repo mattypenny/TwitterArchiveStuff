@@ -26,9 +26,30 @@ Describe "Convert-TaTwitterArchiveToPsObject" {
 
     }
 
+    It "creates an image link by concatenating the tweet id with the file name from the media url" {
+        
+            $TweetWithTheImages = $Tweets[0]
+            $Images = $TweetWithTheImages | Select-Object -expand ImageFileName
+            $FirstImageFileName = $Images[0].FileName
+            Write-Debug "`$FirstImageFileName: <$FirstImageFileName>"
+            $FirstImageFileName | Should -Be '1076485939613044736-DvByQjRWkAAsYDj.jpg'
+        
+    }
+
+    It "creates two image sub-objects if there are two images" {
+            $TweetWithTheImages = $Tweets[0]
+            $TweetWithTheImages | Should -HaveCount 2
+
+    }
+
     It -pending "includes two image links in the text if there are two images" {
 
             $True | Should -Be $False
+
+    }
+
+    It -pending "sticks a space in front of the 
+    hashtags so that markdown doesn't treat them as headings" {
 
     }
 
