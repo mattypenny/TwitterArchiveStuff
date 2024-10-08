@@ -30,6 +30,8 @@ function Convert-TaTwitterArchiveToPsObject {
             $Top = $T | Select-Object -expand tweet
             write-debug "Created <($top).created_at"
 
+            $ImageLinks = get-TaImageLinks -ExpandedTweet $Top
+
             $Urls = foreach ($E in $($Top | select-object -expand entities)) {
                 
                 $E | select-object -expand urls
@@ -68,4 +70,24 @@ function Convert-TaTwitterArchiveToPsObject {
             }
         }
     }
+}
+
+function get-TaImageLinks {
+    [CmdletBinding()]
+    param (
+        $ExpandedTweet
+    )
+    
+    $Images = Select-Object -ExpandProperty extended_entities | 
+        Select-Object -ExpandProperty  media
+
+    $ImageLinks = foreach ($I in $Images) {
+        $TweetId = $I.id_str
+        $Url = $I.Media_url
+
+        $FileName = Split-Path $url -Leaf
+    }
+
+    foreach ($)
+    
 }
