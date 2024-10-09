@@ -29,8 +29,8 @@ Describe "Convert-TaTwitterArchiveToPsObject" {
     It "creates an image link by concatenating the tweet id with the file name from the media url" {
         
             $TweetWithTheImages = $Tweets[0]
-            $Images = $TweetWithTheImages | Select-Object -expand ImageFileName
-            $FirstImageFileName = $Images[0].FileName
+            $Images = $TweetWithTheImages | Select-Object -expand ImageLinks
+            $FirstImageFileName = $Images[0].ImageFileName
             Write-Debug "`$FirstImageFileName: <$FirstImageFileName>"
             $FirstImageFileName | Should -Be '1076485939613044736-DvByQjRWkAAsYDj.jpg'
         

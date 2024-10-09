@@ -31,12 +31,14 @@ function Convert-TaTwitterArchiveToPsObject {
             write-debug "Created <($top).created_at"
 
             $ImageLinks = get-TaImageLinks -ExpandedTweet $Top
+            write-dbg "`$ImageLinks count: <$($ImageLinks.Length)>"
 
             $Urls = foreach ($E in $($Top | select-object -expand entities)) {
                 
                 $E | select-object -expand urls
 
             }
+            write-dbg "`$Urls count: <$($Urls.Length)>"
             
             if ($Urls) {
                 [string]$Text = $Top.full_text
@@ -55,15 +57,18 @@ function Convert-TaTwitterArchiveToPsObject {
                     converteddateTime = [DateTime]::ParseExact($Top.created_at,
                         'ddd MMM dd HH:mm:ss zzz yyyy', 
                         $null) 
+                    ImageLinks = $ImageLinks                    
                 }
             }
             else {
                 [PSCustomObject]@{
                     datetime = $Top.created_at
                     Text     = $Top.full_text  
-                    Short    = $null
-                    Expanded = $null
-                    Display  = $null
+                    converteddateTime = [DateTime]::ParseExact($Top.created_at,
+                        'ddd MMM dd HH:mm:ss zzz yyyy', 
+                        $null) 
+                    ImageLinks = $ImageLinks                    
+
 
                 }
 
@@ -80,14 +85,43 @@ function get-TaImageLinks {
     
     $Images = Select-Object -ExpandProperty extended_entities | 
         Select-Object -ExpandProperty  media
+    write-dbg "In get-TaImageLinks `$Images count: <$($Images.Length)>"
 
     $ImageLinks = foreach ($I in $Images) {
-        $TweetId = $I.id_str
-        $Url = $I.Media_url
 
-        $FileName = Split-Path $url -Leaf
+        [string]$TweetId = $I.id_str
+        [string]$Url = $I.Media_url
+
+        [string]$FileName = Split-Path $url -Leaf
+        
+        $ImageFileName = "$TweetId-$FileName"
+
+        [PSCustomObject]@{
+            ImageFileName = $ImageFileName
+        }
     }
 
-    foreach ($)
+    write-dbg "`$ImageLinks count: <$($ImageLinks.Length)>"
+
+    return $ImageLinks
     
+}
+
+function write-dbg {
+<#
+.SYNOPSIS
+   xx
+#>
+   [CmdletBinding()]
+   param (
+        $DebugLine
+   )
+   
+   $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
+   
+   
+   
+   write-debug $DebugLine
+   
+   
 }
