@@ -83,7 +83,8 @@ function get-TaImageLinks {
         $ExpandedTweet
     )
     
-    $Images = Select-Object -ExpandProperty extended_entities | 
+    $Images = $ExpandedTweet |
+        Select-Object -ExpandProperty extended_entities | 
         Select-Object -ExpandProperty  media
     write-dbg "In get-TaImageLinks `$Images count: <$($Images.Length)>"
 
