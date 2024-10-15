@@ -83,6 +83,10 @@ function get-TaImageLinks {
         $ExpandedTweet
     )
     
+    if (!($ExpandedTweet.Extended_entities)) {
+        return $null
+    }
+
     $Images = $ExpandedTweet |
         Select-Object -ExpandProperty extended_entities | 
         Select-Object -ExpandProperty  media
