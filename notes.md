@@ -108,3 +108,163 @@ Citations:
 [6] https://www.squash.io/how-to-display-local-image-in-markdown/
 [7] https://help.micro.blog/t/moving-blot-to-micro-blog/2288
 [8] https://help.micro.blog/t/how-to-export-the-markdown-i-have-written/1106
+
+
+# Read the content from the text file
+$content = Get-Content -Path 'your_text_file_with_yaml.txt' -Raw
+
+# Define the API endpoint and headers
+$url = 'https://micro.blog/micropub'
+$headers = @{
+    'Authorization' = 'Bearer <your-app-token>'
+    'Content-Type'  = 'application/x-www-form-urlencoded'
+}
+
+# Define the body of the request
+$body = @{
+    h       = 'entry'
+    content = $content
+}
+
+# Send the POST request
+$response = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body $body
+
+# Output the response
+$response
+
+---
+title: "Theresa May on the Salisbury Novichok Attack"
+tags: [Politics, UK, Novichok]
+date: 2024-10-17
+---
+Theresa May gets it right here. It was appalling that Putin tried to assassinate someone on British soil, and it was just unbelievable that they didn't care about who else got poisoned.
+
+"May said the men acted with “utter recklessness”. She said: “You felt they just didn’t care about anything.”
+
+[Justice ‘highly unlikely’ over Salisbury novichok attack, says Theresa May - The Guardian](https://www.theguardian.com/salisbury)
+
+how could I include photos?
+Copilot
+To include photos in your Micro.blog post using the API, you'll need to upload the images first, get their URLs, and then include those URLs in your content. Here's how you can do it:
+
+Upload the Photo: Send a POST request to the Micro.blog API to upload your photo. This will give you a URL for the uploaded image.
+
+Include the Photo URL in Your Content: Once you have the URL, you can include it in your post content using Markdown.
+
+Here's a PowerShell script example to walk you through both steps:
+
+Step 1: Upload the Photo
+
+```
+# Define the photo file path and API endpoint
+$photoFilePath = 'path_to_your_photo.jpg'
+$url = 'https://micro.blog/media'
+
+# Read the photo file
+$photoBytes = [System.IO.File]::ReadAllBytes($photoFilePath)
+
+# Define headers
+$headers = @{
+    'Authorization' = 'Bearer <your-app-token>'
+}
+
+# Upload the photo
+$response = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body $photoBytes -ContentType 'multipart/form-data'
+
+# Extract the URL of the uploaded photo
+$photoUrl = $response.url
+```
+
+Step 2: Include the Photo URL in Your Post
+
+# Read the content from the text file
+$content = Get-Content -Path 'your_text_file_with_yaml.txt' -Raw
+
+# Append the photo URL to your content in Markdown format
+$content += "`n`n![Photo]($photoUrl)"
+
+# Define the API endpoint and headers
+$postUrl = 'https://micro.blog/micropub'
+$headers = @{
+    'Authorization' = 'Bearer <your-app-token>'
+    'Content-Type'  = 'application/x-www-form-urlencoded'
+}
+
+# Define the body of the request
+$body = @{
+    h       = 'entry'
+    content = $content
+}
+
+# Send the POST request to create the post
+$response = Invoke-RestMethod -Uri $postUrl -Method Post -Headers $headers -Body $body
+
+# Output the response
+$response
+```
+You
+how could I include photos?
+Copilot
+To include photos in your Micro.blog post using the API, you'll need to upload the images first, get their URLs, and then include those URLs in your content. Here's how you can do it:
+
+Upload the Photo: Send a POST request to the Micro.blog API to upload your photo. This will give you a URL for the uploaded image.
+
+Include the Photo URL in Your Content: Once you have the URL, you can include it in your post content using Markdown.
+
+Here's a PowerShell script example to walk you through both steps:
+
+Step 1: Upload the Photo
+
+powershell
+
+Copy
+# Define the photo file path and API endpoint
+$photoFilePath = 'path_to_your_photo.jpg'
+$url = 'https://micro.blog/media'
+
+# Read the photo file
+$photoBytes = [System.IO.File]::ReadAllBytes($photoFilePath)
+
+# Define headers
+$headers = @{
+    'Authorization' = 'Bearer <your-app-token>'
+}
+
+# Upload the photo
+$response = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body $photoBytes -ContentType 'multipart/form-data'
+
+# Extract the URL of the uploaded photo
+$photoUrl = $response.url
+```
+Step 2: Include the Photo URL in Your Post
+
+powershell
+
+Copy
+```
+# Read the content from the text file
+$content = Get-Content -Path 'your_text_file_with_yaml.txt' -Raw
+
+# Append the photo URL to your content in Markdown format
+$content += "`n`n![Photo]($photoUrl)"
+
+# Define the API endpoint and headers
+$postUrl = 'https://micro.blog/micropub'
+$headers = @{
+    'Authorization' = 'Bearer <your-app-token>'
+    'Content-Type'  = 'application/x-www-form-urlencoded'
+}
+
+# Define the body of the request
+$body = @{
+    h       = 'entry'
+    content = $content
+}
+
+# Send the POST request to create the post
+$response = Invoke-RestMethod -Uri $postUrl -Method Post -Headers $headers -Body $body
+
+# Output the response
+$response
+```
+Replace <your-app-token>, path_to_your_photo.jpg, and your_text_file_with_yaml.txt with your actual token, photo file path, and text file path. This script will upload your photo to Micro.blog and create a new post with the image included.
