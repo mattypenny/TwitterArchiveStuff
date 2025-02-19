@@ -112,6 +112,57 @@ function get-TaImageLinks {
     
 }
 
+function Convert-TaShortenedLinks {
+<#
+.SYNOPSIS
+   xx
+#>
+   [CmdletBinding()]
+   param (
+      [Parameter(Mandatory=$True)][string]  $TweetText
+   )
+   
+   $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
+   
+   write-startfunction
+   
+   $TweetTextContainsShortenedLinks = $false
+
+   foreach ($ShortenedLinkString in 'https://t.co',
+        'https://bit.ly',
+        'https://buff.ly',
+        'https://dlvr.it',
+        'https://ift.tt',
+        'https://lnkd.in',
+        'https://ow.ly',
+        'https://tinyurl.com',
+        'https://youtu.be') {
+        if ($TweetText -like "*$ShortenedLinkString*") {
+            $TweetTextContainsShortenedLinks = $true
+            break
+        }
+
+    $ShortenedLink = $TweetText | Select-String -Pattern $ShortenedLinkString -AllMatches | 
+        Select-Object -ExpandProperty Matches | 
+        Select-Object -ExpandProperty Value
+
+    $ExpandedLink = ((Invoke-WebRequest -UseBasicParsing –Uri $ShortenedLink).baseresponse).RequestMessage.RequestUri.AbsoluteUri
+
+    $TweetText = $TweetText -replace $ShortenedLink, $ExpandedLink
+
+
+    # Need to return the expanded text
+    # Need to allow for more than one shortened link in a tweet
+    # Need comments
+    # Need to pnly expand if there is a shortened link
+    # Need to write a pester test
+    }
+   
+   write-endfunction
+   
+   
+}
+
 function write-dbg {
 <#
 .SYNOPSIS
