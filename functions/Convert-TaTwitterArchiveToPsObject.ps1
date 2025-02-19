@@ -156,6 +156,8 @@ function Convert-TaShortenedLinks {
     # Need comments
     # Need to pnly expand if there is a shortened link
     # Need to write a pester test
+    # Need to perhaps expand the invoke webrequest line to make it more debuggable
+    # Need to think ablout a log file for the whole thing tbh
     }
    
    write-endfunction
