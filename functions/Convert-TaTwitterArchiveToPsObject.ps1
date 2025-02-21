@@ -51,23 +51,27 @@ function Convert-TaTwitterArchiveToPsObject {
                     Write-Debug "Text <$Text>"
                 }
 
+                $Text = Convert-TaShortenedLinks -TweetText $Text
+
                 [PSCustomObject]@{
-                    datetime = $Top.created_at
-                    Text     = $Text
+                    datetime          = $Top.created_at
+                    Text              = $Text
                     converteddateTime = [DateTime]::ParseExact($Top.created_at,
                         'ddd MMM dd HH:mm:ss zzz yyyy', 
                         $null) 
-                    ImageLinks = $ImageLinks                    
+                    ImageLinks        = $ImageLinks                    
                 }
             }
             else {
+                $Text = $Top.full_text
+                $Text = Convert-TaShortenedLinks -TweetText $Text
                 [PSCustomObject]@{
-                    datetime = $Top.created_at
-                    Text     = $Top.full_text  
+                    datetime          = $Top.created_at
+                    Text              = $Text
                     converteddateTime = [DateTime]::ParseExact($Top.created_at,
                         'ddd MMM dd HH:mm:ss zzz yyyy', 
                         $null) 
-                    ImageLinks = $ImageLinks                    
+                    ImageLinks        = $ImageLinks                    
 
 
                 }
@@ -88,8 +92,8 @@ function get-TaImageLinks {
     }
 
     $Images = $ExpandedTweet |
-        Select-Object -ExpandProperty extended_entities | 
-        Select-Object -ExpandProperty  media
+    Select-Object -ExpandProperty extended_entities | 
+    Select-Object -ExpandProperty  media
     write-dbg "In get-TaImageLinks `$Images count: <$($Images.Length)>"
 
     $ImageLinks = foreach ($I in $Images) {
@@ -113,22 +117,21 @@ function get-TaImageLinks {
 }
 
 function Convert-TaShortenedLinks {
-<#
+    <#
 .SYNOPSIS
    xx
 #>
-   [CmdletBinding()]
-   param (
-      [Parameter(Mandatory=$True)][string]  $TweetText
-   )
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True)][string]  $TweetText
+    )
    
-   $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
+    $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
    
-   write-startfunction
+    write-startfunction
    
-   $TweetTextContainsShortenedLinks = $false
-
-   foreach ($ShortenedLinkString in 'https://t.co',
+    write-dbg "`$TweetText: <$TweetText>"
+    foreach ($ShortenedLinkString in 'https://t.co',
         'https://bit.ly',
         'https://buff.ly',
         'https://dlvr.it',
@@ -137,49 +140,53 @@ function Convert-TaShortenedLinks {
         'https://ow.ly',
         'https://tinyurl.com',
         'https://youtu.be') {
-        if ($TweetText -like "*$ShortenedLinkString*") {
-            $TweetTextContainsShortenedLinks = $true
-            break
-        }
 
-    $ShortenedLink = $TweetText | Select-String -Pattern $ShortenedLinkString -AllMatches | 
+        $AllShortenedLinks = $TweetText | 
+        Select-String -Pattern $ShortenedLinkString -AllMatches | 
         Select-Object -ExpandProperty Matches | 
         Select-Object -ExpandProperty Value
 
-    $ExpandedLink = ((Invoke-WebRequest -UseBasicParsing –Uri $ShortenedLink).baseresponse).RequestMessage.RequestUri.AbsoluteUri
+        foreach ($ShortenedLink in $AllShortenedLinks) {
+            write-dbg "`$ShortenedLink: <$ShortenedLink>"
+            $ExpandedLink = ((Invoke-WebRequest -UseBasicParsing –Uri $ShortenedLink).baseresponse).RequestMessage.RequestUri.AbsoluteUri
+            write-dbg "`$ExpandedLink: <$ExpandedLink>"
 
-    $TweetText = $TweetText -replace $ShortenedLink, $ExpandedLink
+            $TweetText = $TweetText -replace $ShortenedLink, $ExpandedLink
+        }
 
 
-    # Need to return the expanded text
-    # Need to allow for more than one shortened link in a tweet
-    # Need comments
-    # Need to pnly expand if there is a shortened link
-    # Need to write a pester test
-    # Need to perhaps expand the invoke webrequest line to make it more debuggable
-    # Need to think ablout a log file for the whole thing tbh
+        # Need to return the expanded text
+        # Need to allow for more than one shortened link in a tweet
+        # Need comments
+        # Need to pnly expand if there is a shortened link
+        # Need to write a pester test
+        # Need to perhaps expand the invoke webrequest line to make it more debuggable
+        # Need to think ablout a log file for the whole thing tbh
     }
    
-   write-endfunction
+    write-endfunction
+    write-dbg "`$TweetText: <$TweetText>"
+
+    return $TweetText
    
    
 }
 
 function write-dbg {
-<#
+    <#
 .SYNOPSIS
    xx
 #>
-   [CmdletBinding()]
-   param (
+    [CmdletBinding()]
+    param (
         $DebugLine
-   )
+    )
    
-   $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
+    $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
    
    
    
-   write-debug $DebugLine
+    write-debug $DebugLine
    
    
 }
