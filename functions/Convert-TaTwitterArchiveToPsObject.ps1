@@ -130,6 +130,30 @@ function Convert-TaShortenedLinks {
    
     write-startfunction
    
+    <#
+    $patterns = @("WIN", "fo")
+
+$pattern = '\b$p[^ ]* '
+
+$p = $patterns -join "|"
+
+$pattern = '\b$p[^ ]* '
+
+$matches = [regex]::Matches($string, $pattern, 'IgnoreCase')
+
+foreach ($match in $matches) {
+    Write-Output $match.Value
+}
+
+$p
+
+$pattern = '\b(' + $p + ')[^ ]* '
+
+$matches = [regex]::Matches($string, $pattern, 'IgnoreCase') ; foreach ($match in $matches) {
+    Write-Output $match.Value
+}
+    
+    #>
     write-dbg "`$TweetText: <$TweetText>"
     foreach ($ShortenedLinkString in 'https://t.co',
         'https://bit.ly',
@@ -155,13 +179,13 @@ function Convert-TaShortenedLinks {
         }
 
 
-        # Need to return the expanded text
-        # Need to allow for more than one shortened link in a tweet
-        # Need comments
-        # Need to pnly expand if there is a shortened link
-        # Need to write a pester test
-        # Need to perhaps expand the invoke webrequest line to make it more debuggable
-        # Need to think ablout a log file for the whole thing tbh
+        # TODO: Need to return the expanded text
+        # TODO: Need to allow for more than one shortened link in a tweet
+        # TODO: Need comments
+        # TODO: Need to pnly expand if there is a shortened link
+        # TODO: Need to write a pester test
+        # TODO: Need to perhaps expand the invoke webrequest line to make it more debuggable
+        # TODO: Need to think ablout a log file for the whole thing tbh
     }
    
     write-endfunction
