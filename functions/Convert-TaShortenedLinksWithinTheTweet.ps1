@@ -13,25 +13,26 @@ function Convert-TaShortenedLinks {
     write-startfunction
    
     <#
-    $patterns = @("WIN", "fo")
+    $patterns = @(https://t.co',
+        'https://bit.ly',
+        'https://buff.ly',
+        'https://dlvr.it',
+        'https://ift.tt',
+        'https://lnkd.in',
+        'https://ow.ly',
+        'https://tinyurl.com',
+        'https://youtu.be')
 
-$pattern = '\b$p[^ ]* '
 
 $p = $patterns -join "|"
-
-$pattern = '\b$p[^ ]* '
-
-$matches = [regex]::Matches($string, $pattern, 'IgnoreCase')
-
-foreach ($match in $matches) {
-    Write-Output $match.Value
-}
 
 $p
 
 $pattern = '\b(' + $p + ')[^ ]* '
 
-$matches = [regex]::Matches($string, $pattern, 'IgnoreCase') ; foreach ($match in $matches) {
+$matches = [regex]::Matches($string, $pattern, 'IgnoreCase') 
+
+foreach ($match in $matches) {
     Write-Output $match.Value
 }
     
