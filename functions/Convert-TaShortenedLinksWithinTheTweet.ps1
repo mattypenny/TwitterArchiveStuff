@@ -13,7 +13,14 @@ function Convert-TaShortenedLinks {
     write-startfunction
    
     <#
-    $patterns = @(https://t.co',
+ 
+$p
+
+    
+    #>
+    write-dbg "`$TweetText: <$TweetText>"
+ 
+    $patterns = @('https://t.co',
         'https://bit.ly',
         'https://buff.ly',
         'https://dlvr.it',
@@ -23,58 +30,38 @@ function Convert-TaShortenedLinks {
         'https://tinyurl.com',
         'https://youtu.be')
 
-
-$p = $patterns -join "|"
-
-$p
-
-$pattern = '\b(' + $p + ')[^ ]* '
-
-$matches = [regex]::Matches($string, $pattern, 'IgnoreCase') 
-
-foreach ($match in $matches) {
-    Write-Output $match.Value
-}
+    $p = $patterns -join "|"
     
-    #>
-    write-dbg "`$TweetText: <$TweetText>"
-    foreach ($ShortenedLinkString in 'https://t.co',
-        'https://bit.ly',
-        'https://buff.ly',
-        'https://dlvr.it',
-        'https://ift.tt',
-        'https://lnkd.in',
-        'https://ow.ly',
-        'https://tinyurl.com',
-        'https://youtu.be') {
+    $pattern = '\b(' + $p + ')[^ ]* '
 
-        $AllShortenedLinks = $TweetText | 
-        Select-String -Pattern $ShortenedLinkString -AllMatches | 
-        Select-Object -ExpandProperty Matches | 
-        Select-Object -ExpandProperty Value
+    $RegexMatches = [regex]::Matches($string, $pattern, 'IgnoreCase') 
+    write-dbg "Regex line:`$matches = [regex]::Matches('$TweetText', '$pattern', 'IgnoreCase') "
 
-        foreach ($ShortenedLink in $AllShortenedLinks) {
-            write-dbg "`$ShortenedLink: <$ShortenedLink>"
-            $ExpandedLink = ((Invoke-WebRequest -UseBasicParsing –Uri $ShortenedLink).baseresponse).RequestMessage.RequestUri.AbsoluteUri
-            write-dbg "`$ExpandedLink: <$ExpandedLink>"
+    foreach ($ShortenedLink in $RegexMatches) {
+        write-dbg "`$ShortenedLink: <$ShortenedLink>"
+        $ExpandedLink = ((Invoke-WebRequest -UseBasicParsing –Uri $ShortenedLink).baseresponse).RequestMessage.RequestUri.AbsoluteUri
+        write-dbg "`$ExpandedLink: <$ExpandedLink>"
 
-            $TweetText = $TweetText -replace $ShortenedLink, $ExpandedLink
-        }
-
-
-        # TODO: Need to return the expanded text
-        # TODO: Need to allow for more than one shortened link in a tweet
-        # TODO: Need comments
-        # TODO: Need to pnly expand if there is a shortened link
-        # TODO: Need to write a pester test
-        # TODO: Need to perhaps expand the invoke webrequest line to make it more debuggable
-        # TODO: Need to think ablout a log file for the whole thing tbh
+        $TweetText = $TweetText -replace $ShortenedLink, $ExpandedLink
     }
-   
-    write-endfunction
-    write-dbg "`$TweetText: <$TweetText>"
 
-    return $TweetText
+
+ 
+
+
+    # TODO: Need to return the expanded text
+    # TODO: Need to allow for more than one shortened link in a tweet
+    # TODO: Need comments
+    # TODO: Need to pnly expand if there is a shortened link
+    # TODO: Need to write a pester test
+    # TODO: Need to perhaps expand the invoke webrequest line to make it more debuggable
+    # TODO: Need to think ablout a log file for the whole thing tbh
+}
+   
+write-endfunction
+write-dbg "`$TweetText: <$TweetText>"
+
+return $TweetText
    
    
 }
