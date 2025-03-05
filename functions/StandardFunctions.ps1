@@ -1,5 +1,5 @@
 function write-startfunction {
-<#
+    <#
 .SYNOPSIS
   Marks start of function in logfile or debug output
 .DESCRIPTION
@@ -36,7 +36,7 @@ function write-startfunction {
 
 
 function write-endfunction {
-<#
+    <#
 .SYNOPSIS
   Marks end of function in logfile or debug output
 .DESCRIPTION
@@ -71,23 +71,6 @@ function write-endfunction {
     return
 }
 
-Conversation opened. 1 unread message.
-
-Skip to content
-Using Gmail with screen readers
-1 of 14,777
-stuff
-Inbox
-
-Matt Penny
-5:29 PM (10 minutes ago)
-to me
-
- 
-
- 
-
- 
 
 function write-dbg {
 
@@ -111,7 +94,7 @@ function write-dbg {
 
     Param( $x,
 
-           [switch]$TimeStamp = $False )
+        [switch]$TimeStamp = $False )
 
  
 
@@ -126,7 +109,6 @@ function write-dbg {
  
 
     if ($TimeStamp)
-
     {
 
         [string]$Ts = $(Get-Date -format "dd MMM yyyy HH:mm:ss:fff:")
@@ -134,7 +116,6 @@ function write-dbg {
     }
 
     else
-
     {
 
         [string]$Ts = ""
@@ -157,7 +138,7 @@ function write-dbg {
 
 function Write-SSfLog {
 
-<#
+    <#
 
 .SYNOPSIS
 
@@ -221,21 +202,21 @@ function Write-SSfLog {
 
  
 
-        if ($Initialize) {
+    if ($Initialize) {
 
-            $Append = $False
-
- 
-
-            if ($Timestamp) {
-
-                $TsHeader = "Timestamp^"
-
-            }
+        $Append = $False
 
  
 
-            $LineToOutput = @"
+        if ($Timestamp) {
+
+            $TsHeader = "Timestamp^"
+
+        }
+
+ 
+
+        $LineToOutput = @"
 
     ${TsHeader}Status^Message^ExtraKey
 
@@ -245,19 +226,20 @@ function Write-SSfLog {
 
  
 
-        } else {
+    }
+    else {
 
-            $Append = $True
+        $Append = $True
 
-        }
-
- 
-
-        $LineToOutput | out-file -Append:$Append -filepath $Csv
+    }
 
  
 
-        write-dbg $LineToOutput
+    $LineToOutput | out-file -Append:$Append -filepath $Csv
+
+ 
+
+    write-dbg $LineToOutput
 
  
 
@@ -269,7 +251,7 @@ Set-Alias Write-SsfCsv Write-SSfLog
 
 function New-SsfFolderForFileName {
 
-<#
+    <#
 
 .SYNOPSIS
 
@@ -315,7 +297,7 @@ function New-SsfFolderForFileName {
 
 function Show-SsfInformation {
 
-<#
+    <#
 
 .SYNOPSIS
 
@@ -357,36 +339,36 @@ function write-DbgPsBoundParameters {
 
     #>
 
-        [CmdletBinding()]
+    [CmdletBinding()]
 
-        param (
+    param (
 
-            $MyParameters
+        $MyParameters
 
-        )
-
- 
-
-        $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
+    )
 
  
 
-        write-debug "PSBoundParameters are as follows:"
+    $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
 
  
 
-        foreach ($k in $MyParameters.Keys) {
-
-            $PaddedKey = $k + ':'
-
-            $PaddedKey = $PaddedKey.PadRight(24)
-
-            write-debug "$PaddedKey $($MyParameters[$k])"
-
-        }
+    write-debug "PSBoundParameters are as follows:"
 
  
 
-        write-debug "End of PSBoundParameters"
+    foreach ($k in $MyParameters.Keys) {
+
+        $PaddedKey = $k + ':'
+
+        $PaddedKey = $PaddedKey.PadRight(24)
+
+        write-debug "$PaddedKey $($MyParameters[$k])"
+
+    }
+
+ 
+
+    write-debug "End of PSBoundParameters"
 
 }

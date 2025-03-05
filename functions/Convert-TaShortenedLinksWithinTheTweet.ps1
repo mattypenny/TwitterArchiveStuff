@@ -1,4 +1,4 @@
-function Convert-TaShortenedLinks {
+function Convert-TaShortenedLinksWithinTheTweet {
     <#
 .SYNOPSIS
    xx
@@ -11,17 +11,12 @@ function Convert-TaShortenedLinks {
     $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
    
     write-startfunction
-   
-    <#
- 
-$p
-
-    
-    #>
+  
     write-dbg "`$TweetText: <$TweetText>"
  
     $patterns = @('https://t.co',
         'https://bit.ly',
+        'http://bit.ly',
         'https://buff.ly',
         'https://dlvr.it',
         'https://ift.tt',
@@ -32,12 +27,13 @@ $p
 
     $p = $patterns -join "|"
     
-    $pattern = '\b(' + $p + ')[^ ]* '
+    $pattern = '\b(' + $p + ')[^ ]*(?=\s|$)'
 
-    $RegexMatches = [regex]::Matches($string, $pattern, 'IgnoreCase') 
+    $RegexMatches = [regex]::Matches($TweetText, $pattern, 'IgnoreCase') 
     write-dbg "Regex line:`$matches = [regex]::Matches('$TweetText', '$pattern', 'IgnoreCase') "
 
-    foreach ($ShortenedLink in $RegexMatches) {
+    foreach ($Match in $RegexMatches) {
+        $ShortenedLink = $Match.Value
         write-dbg "`$ShortenedLink: <$ShortenedLink>"
         $ExpandedLink = ((Invoke-WebRequest -UseBasicParsing –Uri $ShortenedLink).baseresponse).RequestMessage.RequestUri.AbsoluteUri
         write-dbg "`$ExpandedLink: <$ExpandedLink>"
@@ -56,12 +52,11 @@ $p
     # TODO: Need to write a pester test
     # TODO: Need to perhaps expand the invoke webrequest line to make it more debuggable
     # TODO: Need to think ablout a log file for the whole thing tbh
-}
    
-write-endfunction
-write-dbg "`$TweetText: <$TweetText>"
+    write-endfunction
+    write-dbg "`$TweetText: <$TweetText>"
 
-return $TweetText
+    return $TweetText
    
    
 }
