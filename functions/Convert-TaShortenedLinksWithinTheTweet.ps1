@@ -34,9 +34,7 @@ function Convert-TaShortenedLinksWithinTheTweet {
 
     foreach ($Match in $RegexMatches) {
         $ShortenedLink = $Match.Value
-        write-dbg "`$ShortenedLink: <$ShortenedLink>"
-        $ExpandedLink = ((Invoke-WebRequest -UseBasicParsing –Uri $ShortenedLink).baseresponse).RequestMessage.RequestUri.AbsoluteUri
-        write-dbg "`$ExpandedLink: <$ExpandedLink>"
+        $ExpandedLink = Convert-TaShortenedLinkToExpandedLink -ShortenedLink $ShortenedLink
 
         $TweetText = $TweetText -replace $ShortenedLink, $ExpandedLink
     }
@@ -59,4 +57,39 @@ function Convert-TaShortenedLinksWithinTheTweet {
     return $TweetText
    
    
+}
+
+function Convert-TaShortenedLinkToExpandedLink {
+    <#
+<#
+.SYNOPSIS
+   xx
+#>
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True)][string] $ShortenedLink
+    )
+   
+    $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
+   
+    write-startfunction
+   
+    write-dbg "`$ShortenedLink: <$ShortenedLink>"
+    
+    try {
+        $Response = Invoke-WebRequest -UseBasicParsing -Uri $ShortenedLink
+    }
+    catch {
+        write-dbg "Error: $_"
+        return $ShortenedLink
+    }
+ 
+    $BaseResponse = $Response.BaseResponse
+    $RequestMessage = $BaseResponse.RequestMessage
+    $ExpandedLink = $RequestMessage.RequestUri.AbsoluteUri 
+    
+    write-dbg "`$ExpandedLink: <$ExpandedLink>"
+    write-endfunction
+   
+    return $ExpandedLink
 }
