@@ -35,6 +35,14 @@ Describe "Convert-TaShortenedLinksWithinTheTweet" {
             TweetText = "My favourite Xmas-related podcast - the Nightsingers of Brighton, Newfoundland. From RTE http://bit.ly/41KzNeS "
             Expected  = "My favourite Xmas-related podcast - the Nightsingers of Brighton, Newfoundland. From RTE https://www.rte.ie/radio/doconone/2010/1229/646601-the_nightsingers_of_brighton/ "
         }
+        @{ 
+            TweetText = "Dory Previn was married to Andre Previn.  Tbh, I only know Andre Previn from Morecambe and Wise https://t.co/1EkizwPKd8"
+            Expected  = "Dory Previn was married to Andre Previn.  Tbh, I only know Andre Previn from Morecambe and Wise https://en.wikipedia.org/wiki/Dory_Previn" 
+        }
+        @{ 
+            TweetText = "Testing with two URLs https://t.co/1EkizwPKd8  http://bit.ly/41KzNeS "
+            Expected  = "Testing with two URLs https://en.wikipedia.org/wiki/Dory_Previn  https://www.rte.ie/radio/doconone/2010/1229/646601-the_nightsingers_of_brighton/ " 
+        }
     )
 
 
