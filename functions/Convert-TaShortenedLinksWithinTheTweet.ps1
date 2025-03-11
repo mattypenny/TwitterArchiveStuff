@@ -22,6 +22,7 @@ function Convert-TaShortenedLinksWithinTheTweet {
         'https://ift.tt',
         'https://lnkd.in',
         'https://ow.ly',
+        'http://tinyurl.com',
         'https://tinyurl.com',
         'https://youtu.be')
 
