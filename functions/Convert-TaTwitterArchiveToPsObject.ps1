@@ -14,6 +14,19 @@
     $Tweets = gc ./clean_tweets.json  | convertfrom-json
     $t20 = $Tweets | ? tweet -like "*Nov 20*" | select -first 20
     $T20 | Select-TweetStuff
+
+    DEBUG: Convert-TaTwitterArchiveToPsObject: $Urls count: <1>
+DEBUG: Text <ICYMI: top reggae trivia from @JohnWilson14's MasterTapes https://t.co/BiDUifu1Uz>
+DEBUG: Short <https://t.co/BiDUifu1Uz> Expanded <https://twitter.com/salisbury_matt/status/763628643323084800>
+DEBUG: Text <ICYMI: top reggae trivia from @JohnWilson14's MasterTapes https://twitter.com/salisbury_matt/status/763628643323084800>
+Convert-TaShortenedLinks: C:\Users\matty\OneDrive\powershell\Modules\TwitterArchiveStuff\functions\Convert-TaTwitterArchiveToPsObject.ps1:54
+Line |
+  54 |                  $Text = Convert-TaShortenedLinks -TweetText $Text
+     |                          ~~~~~~~~~~~~~~~~~~~~~~~~
+     | The term 'Convert-TaShortenedLinks' is not recognized as a name of a cmdlet, function, script file, or
+     | executable program. Check the spelling of the name, or if a path was included, verify that the path is correct
+     | and try again.
+DEBUG: Created <(@{edit_info=; retweeted=False; source=<a href="http://twitter.com" rel="nofollow">Twitter Web Client</a>; entities=; display_text_range=System.Object[]; favorite_count=0; id_str=763844007285911552; truncated=False; retweet_count=0; id=763844007285911
 #>
 
 
@@ -51,7 +64,7 @@ function Convert-TaTwitterArchiveToPsObject {
                     Write-Debug "Text <$Text>"
                 }
 
-                $Text = Convert-TaShortenedLinks -TweetText $Text
+                $Text = Convert-TaShortenedLinksWithinTheTweet -TweetText $Text
 
                 [PSCustomObject]@{
                     datetime          = $Top.created_at
@@ -64,7 +77,7 @@ function Convert-TaTwitterArchiveToPsObject {
             }
             else {
                 $Text = $Top.full_text
-                $Text = Convert-TaShortenedLinks -TweetText $Text
+                $Text = Convert-TaShortenedLinksWithinTheTweet -TweetText $Text
                 [PSCustomObject]@{
                     datetime          = $Top.created_at
                     Text              = $Text
