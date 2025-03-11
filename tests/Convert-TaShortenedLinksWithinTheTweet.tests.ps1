@@ -43,6 +43,10 @@ Describe "Convert-TaShortenedLinksWithinTheTweet" {
             TweetText = "Testing with two URLs https://t.co/1EkizwPKd8  http://bit.ly/41KzNeS "
             Expected  = "Testing with two URLs https://en.wikipedia.org/wiki/Dory_Previn  https://www.rte.ie/radio/doconone/2010/1229/646601-the_nightsingers_of_brighton/ " 
         }
+        @{ 
+            TweetText = "Testing with two URLs from the same shortener https://bit.ly/4hrSUim  https://bit.ly/41WIrXK"
+            Expected  = "Testing with two URLs from the same shortener https://mattypenny.micro.blog/ https://hopenothate.org.uk/" 
+        }
     )
 
 
