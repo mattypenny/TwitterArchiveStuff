@@ -24,32 +24,36 @@ function Convert-TaTwitterArchiveToPsObject {
         [parameter(
             Mandatory = $true,
             ValueFromPipeline = $true)]
-        $Tweet
+        $Tweet,
+        $Log = 'c:\temp\TwitterARchiveStuff\Log-$(Get-date).dayofweek.csv'
     )
     process {
+
+        write-SsfLog -Log $Log -Message "In Convert-TaTwitterArchiveToPsObject" -Initialize
+
         foreach ($T in $Tweet) {
             $Top = $T | Select-Object -expand tweet
-            write-debug "Created <($top).created_at"
+            write-SsfLog -Log $Log -Message "Created <($top).created_at"
 
             $ImageLinks = get-TaImageLinks -ExpandedTweet $Top
-            write-dbg "`$ImageLinks count: <$($ImageLinks.Length)>"
+            write-SsfLog -Log $Log -Message "`$ImageLinks count: <$($ImageLinks.Length)>"
 
             $Urls = foreach ($E in $($Top | select-object -expand entities)) {
                 
                 $E | select-object -expand urls
 
             }
-            write-dbg "`$Urls count: <$($Urls.Length)>"
+            write-SsfLog -Log $Log -Message "`$Urls count: <$($Urls.Length)>"
             
             if ($Urls) {
                 [string]$Text = $Top.full_text
-                Write-Debug "Text <$Text>"
+                write-SsfLog -Log $Log -Message "Text <$Text>"
                 foreach ($U in $Urls) {
                     [string]$Short = $U.Url
                     [string]$Expanded = $U.Expanded_url
-                    Write-Debug "Short <$Short> Expanded <$Expanded>"
+                    write-SsfLog -Log $Log -Message "Short <$Short> Expanded <$Expanded>"
                     $Text = $Text -replace $Short, $Expanded
-                    Write-Debug "Text <$Text>"
+                    write-SsfLog -Log $Log -Message "Text <$Text>"
                 }
 
                 $Text = Convert-TaShortenedLinksWithinTheTweet -TweetText $Text
@@ -85,7 +89,8 @@ function Convert-TaTwitterArchiveToPsObject {
 function get-TaImageLinks {
     [CmdletBinding()]
     param (
-        $ExpandedTweet
+        $ExpandedTweet,
+        [Parameter(Mandatory=$True)][string]$Log
     )
     
     if (!($ExpandedTweet.Extended_entities)) {
@@ -95,7 +100,7 @@ function get-TaImageLinks {
     $Images = $ExpandedTweet |
     Select-Object -ExpandProperty extended_entities | 
     Select-Object -ExpandProperty  media
-    write-dbg "In get-TaImageLinks `$Images count: <$($Images.Length)>"
+    write-SsfLog -Log $Log -Message "In get-TaImageLinks `$Images count: <$($Images.Length)>"
 
     $ImageLinks = foreach ($I in $Images) {
 
@@ -111,14 +116,14 @@ function get-TaImageLinks {
         }
     }
 
-    write-dbg "`$ImageLinks count: <$($ImageLinks.Length)>"
+    write-SsfLog -Log $Log -Message "`$ImageLinks count: <$($ImageLinks.Length)>"
 
     return $ImageLinks
     
 }
 
 
-function write-dbg {
+function write-SsfLog -Log $Log -Message {
     <#
 .SYNOPSIS
    xx
@@ -132,7 +137,7 @@ function write-dbg {
    
    
    
-    write-debug $DebugLine
+    write-SsfLog -Log $Log -Message $DebugLine
    
    
 }

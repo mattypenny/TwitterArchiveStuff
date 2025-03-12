@@ -14,7 +14,7 @@ Describe "Convert-TaTwitterArchiveToPsObject" {
 
             $TweetWithTheLink = $Tweets[1]
             $Text = $TweetWithTheLink.Text
-            Write-Debug "`$Text: <$Text>"
+            write-SsfLog -Log $Log -Message "`$Text: <$Text>"
             $Text.Contains('t.co') | Should -Be $False
             $Text | Should -BeLike "*bbc*"
 
@@ -39,11 +39,11 @@ Describe "Convert-TaTwitterArchiveToPsObject" {
             $Images = $TweetWithTheImages | Select-Object -expand ImageLinks
 
             $FirstImageFileName = $Images[0].ImageFileName
-            Write-Debug "`$FirstImageFileName: <$FirstImageFileName>"
+            write-SsfLog -Log $Log -Message "`$FirstImageFileName: <$FirstImageFileName>"
             $FirstImageFileName | Should -Be '1076485920365469696-DvByPbkX4AAP4h9.jpg'
         
             $SecondImageFileName = $Images[1].ImageFileName
-            Write-Debug "`$SecondImageFileName: <$SecondImageFileName>"
+            write-SsfLog -Log $Log -Message "`$SecondImageFileName: <$SecondImageFileName>"
             $SecondImageFileName | Should -Be '1076485939613044736-DvByQjRWkAAsYDj.jpg'
         
     }

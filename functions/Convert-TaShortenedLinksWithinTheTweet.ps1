@@ -5,7 +5,8 @@ function Convert-TaShortenedLinksWithinTheTweet {
 #>
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $True)][string]  $TweetText
+        [Parameter(Mandatory = $True)][string]  $TweetText,
+        [Parameter(Mandatory = $True)][string]$Log
     )
    
     $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
@@ -68,7 +69,8 @@ function Convert-TaShortenedLinkToExpandedLink {
 #>
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $True)][string] $ShortenedLink
+        [Parameter(Mandatory = $True)][string] $ShortenedLink,
+        [Parameter(Mandatory = $True)][string]$Log
     )
    
     $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')

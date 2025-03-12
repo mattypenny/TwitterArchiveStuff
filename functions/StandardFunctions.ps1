@@ -27,7 +27,7 @@ function write-startfunction {
     # [string]$FunctionName = $CallingFunction.FunctionName
     # (Get-Host).PrivateData.DebugForegroundColor = "Gray"
 
-    write-dbg  "$CallDate StartFunction: $Command "
+    write-SsfLog -Log $Log -Message  "$CallDate StartFunction: $Command "
 
     # (Get-Host).PrivateData.DebugForegroundColor = "Blue"
 
@@ -64,7 +64,7 @@ function write-endfunction {
     # [string]$FunctionName = $CallingFunction.FunctionName
     # (Get-Host).PrivateData.DebugForegroundColor = "Gray"
 
-    write-dbg  "$CallDate EndFunction: $Command "
+    write-SsfLog -Log $Log -Message  "$CallDate EndFunction: $Command "
 
     # (Get-Host).PrivateData.DebugForegroundColor = "Blue"
 
@@ -72,13 +72,13 @@ function write-endfunction {
 }
 
 
-function write-dbg {
+function write-SsfLog -Log $Log -Message {
 
     <#
 
     .SYNOPSIS
 
-      write-dbg with function and time stamp
+      write-SsfLog -Log $Log -Message with function and time stamp
 
     .DESCRIPTION
 
@@ -108,15 +108,13 @@ function write-dbg {
 
  
 
-    if ($TimeStamp)
-    {
+    if ($TimeStamp) {
 
         [string]$Ts = $(Get-Date -format "dd MMM yyyy HH:mm:ss:fff:")
 
     }
 
-    else
-    {
+    else {
 
         [string]$Ts = ""
 
@@ -124,7 +122,7 @@ function write-dbg {
 
  
 
-    write-debug "$Ts$Command`: $x"
+    write-SsfLog -Log $Log -Message "$Ts$Command`: $x"
 
  
 
@@ -239,7 +237,7 @@ function Write-SSfLog {
 
  
 
-    write-dbg $LineToOutput
+    write-SsfLog -Log $Log -Message $LineToOutput
 
  
 
@@ -277,7 +275,7 @@ function New-SsfFolderForFileName {
 
         [string]$Folder = [System.IO.Path]::GetDirectoryName($F)
 
-        write-dbg "`$Folder: <$Folder>"
+        write-SsfLog -Log $Log -Message "`$Folder: <$Folder>"
 
         if (!(test-path $Folder)) {
 
@@ -353,7 +351,7 @@ function write-DbgPsBoundParameters {
 
  
 
-    write-debug "PSBoundParameters are as follows:"
+    write-SsfLog -Log $Log -Message "PSBoundParameters are as follows:"
 
  
 
@@ -363,12 +361,12 @@ function write-DbgPsBoundParameters {
 
         $PaddedKey = $PaddedKey.PadRight(24)
 
-        write-debug "$PaddedKey $($MyParameters[$k])"
+        write-SsfLog -Log $Log -Message "$PaddedKey $($MyParameters[$k])"
 
     }
 
  
 
-    write-debug "End of PSBoundParameters"
+    write-SsfLog -Log $Log -Message "End of PSBoundParameters"
 
 }
