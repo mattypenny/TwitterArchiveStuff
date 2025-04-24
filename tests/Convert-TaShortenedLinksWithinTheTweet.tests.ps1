@@ -52,8 +52,12 @@ Describe "Convert-TaShortenedLinksWithinTheTweet" {
 
     It "should return the an expanded link for '<TweetText>'" -TestCases $testCases {
 
+        # Arrange
+        $Log = "c:\temp\TwitterARchiveStuff\Log-$($(Get-date).dayofweek).csv"
+        New-SsfFolderForFileName $Log
+
         # Act
-        $result = Convert-TaShortenedLinksWithinTheTweet -TweetText $TweetText
+        $result = Convert-TaShortenedLinksWithinTheTweet -TweetText $TweetText -log $Log
 
         # Assert
         $result | Should -Be $Expected

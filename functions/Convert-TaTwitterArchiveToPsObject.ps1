@@ -35,7 +35,7 @@ function Convert-TaTwitterArchiveToPsObject {
             $Top = $T | Select-Object -expand tweet
             write-SsfLog -Log $Log -Message "Created <($top).created_at"
 
-            $ImageLinks = get-TaImageLinks -ExpandedTweet $Top
+            $ImageLinks = get-TaImageLinks -ExpandedTweet $Top -Log $Log
             write-SsfLog -Log $Log -Message "`$ImageLinks count: <$($ImageLinks.Length)>"
 
             $Urls = foreach ($E in $($Top | select-object -expand entities)) {
@@ -56,7 +56,7 @@ function Convert-TaTwitterArchiveToPsObject {
                     write-SsfLog -Log $Log -Message "Text <$Text>"
                 }
 
-                $Text = Convert-TaShortenedLinksWithinTheTweet -TweetText $Text
+                $Text = Convert-TaShortenedLinksWithinTheTweet -TweetText $Text -Log $Log
 
                 [PSCustomObject]@{
                     datetime          = $Top.created_at
@@ -69,7 +69,7 @@ function Convert-TaTwitterArchiveToPsObject {
             }
             else {
                 $Text = $Top.full_text
-                $Text = Convert-TaShortenedLinksWithinTheTweet -TweetText $Text
+                $Text = Convert-TaShortenedLinksWithinTheTweet -TweetText $Text -Log $Log
                 [PSCustomObject]@{
                     datetime          = $Top.created_at
                     Text              = $Text
@@ -90,7 +90,7 @@ function get-TaImageLinks {
     [CmdletBinding()]
     param (
         $ExpandedTweet,
-        [Parameter(Mandatory=$True)][string]$Log
+        [Parameter(Mandatory = $True)][string]$Log
     )
     
     if (!($ExpandedTweet.Extended_entities)) {
@@ -123,21 +123,3 @@ function get-TaImageLinks {
 }
 
 
-function write-SsfLog -Log $Log -Message {
-    <#
-.SYNOPSIS
-   xx
-#>
-    [CmdletBinding()]
-    param (
-        $DebugLine
-    )
-   
-    $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
-   
-   
-   
-    write-SsfLog -Log $Log -Message $DebugLine
-   
-   
-}

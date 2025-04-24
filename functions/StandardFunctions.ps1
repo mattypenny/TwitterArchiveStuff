@@ -72,7 +72,7 @@ function write-endfunction {
 }
 
 
-function write-SsfLog -Log $Log -Message {
+function write-SsfLog {
 
     <#
 
@@ -152,7 +152,7 @@ function Write-SSfLog {
 
     param (
 
-        [Alias ('Log')][string]$Csv,
+        [Parameter(Mandatory = $True)][Alias ('Log')][string]$Csv,
 
         [string]$Message,
 
@@ -261,6 +261,7 @@ function New-SsfFolderForFileName {
 
     param (
 
+        
         [string[]]$Fullname
 
     )
@@ -274,8 +275,6 @@ function New-SsfFolderForFileName {
     foreach ($F in $Fullname) {
 
         [string]$Folder = [System.IO.Path]::GetDirectoryName($F)
-
-        write-SsfLog -Log $Log -Message "`$Folder: <$Folder>"
 
         if (!(test-path $Folder)) {
 
