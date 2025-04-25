@@ -29,7 +29,7 @@ function Convert-TaTwitterArchiveToPsObject {
     )
     process {
 
-        write-SsfLog -Log $Log -Message "In Convert-TaTwitterArchiveToPsObject" -Initialize
+        write-SsfLog -Log $Log -Message "In Convert-TaTwitterArchiveToPsObject" 
 
         foreach ($T in $Tweet) {
             $Top = $T | Select-Object -expand tweet

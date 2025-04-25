@@ -36,7 +36,7 @@ function Convert-TaShortenedLinksWithinTheTweet {
 
     foreach ($Match in $RegexMatches) {
         $ShortenedLink = $Match.Value
-        $ExpandedLink = Convert-TaShortenedLinkToExpandedLink -ShortenedLink $ShortenedLink
+        $ExpandedLink = Convert-TaShortenedLinkToExpandedLink -ShortenedLink $ShortenedLink -Log $Log
 
         $TweetText = $TweetText -replace $ShortenedLink, $ExpandedLink
     }

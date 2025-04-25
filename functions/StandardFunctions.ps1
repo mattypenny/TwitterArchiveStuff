@@ -72,67 +72,6 @@ function write-endfunction {
 }
 
 
-function write-SsfLog {
-
-    <#
-
-    .SYNOPSIS
-
-      write-SsfLog -Log $Log -Message with function and time stamp
-
-    .DESCRIPTION
-
-      Gets parameters back from Get-PSCallStack
-
-    .EXAMPLE
-
-      write-startfunction $MyInvocation
-
-    #>
-
-    [CmdletBinding()]
-
-    Param( $x,
-
-        [switch]$TimeStamp = $False )
-
- 
-
-    $DebugPreference = $PSCmdlet.GetVariableValue('DebugPreference')
-
-    $CallingFunction = Get-PSCallStack | Select-Object -first 2 | select-object -last 1
-
- 
-
-    [string]$Command = $CallingFunction.Command
-
- 
-
-    if ($TimeStamp) {
-
-        [string]$Ts = $(Get-Date -format "dd MMM yyyy HH:mm:ss:fff:")
-
-    }
-
-    else {
-
-        [string]$Ts = ""
-
-    }
-
- 
-
-    write-SsfLog -Log $Log -Message "$Ts$Command`: $x"
-
- 
-
-    return
-
-}
-
- 
-
- 
 
 function Write-SSfLog {
 
@@ -237,7 +176,6 @@ function Write-SSfLog {
 
  
 
-    write-SsfLog -Log $Log -Message $LineToOutput
 
  
 
